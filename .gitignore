@@ -15,3 +15,6 @@ test-results/
 
 # Local working notes (AI usage log, write-up drafts) – submitted separately, not part of the repo.
 /docs/
+
+# Local tooling configuration
+/.claude/
