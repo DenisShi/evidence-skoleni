@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { evaluateCompliance } from '../src/compliance.ts';
 import { importDataset } from '../src/import/index.ts';
+import { buildOverview } from '../src/overview.ts';
 
 // The real exports contain personal data and are not in the repository; this suite runs only
 // where they are available locally (`data/`). CI relies on the synthetic fixtures.
@@ -45,5 +47,27 @@ describe.skipIf(!available)('import of the real exports', () => {
   it('does not leak birth numbers', () => {
     const { dataset, report } = run();
     expect(JSON.stringify({ dataset, report })).not.toMatch(/\d{6}\/\d{4}/);
+  });
+
+  it('evaluates compliance as of 14. 10. 2026 (regression snapshot of the totals)', () => {
+    const { dataset } = run();
+    const overview = buildOverview(
+      evaluateCompliance(dataset, { referenceDate: '2026-10-14', warningDays: 90 })
+    );
+    expect(overview.employeesByState).toEqual({
+      active: 145,
+      starting: 3,
+      leaving: 4,
+      parental_leave: 6,
+      terminated: 12,
+    });
+    expect(overview.totals).toEqual({
+      total: 751,
+      ok: 542,
+      expiring: 120,
+      expired: 25,
+      missing: 64,
+      needsAction: 209,
+    });
   });
 });
