@@ -29,3 +29,14 @@ export {
   type Overview,
   type StatusCounts,
 } from './overview.ts';
+export {
+  bookableSessions,
+  planEnrollments,
+  type Assignment,
+  type EnrollmentPlan,
+  type SessionPlan,
+  type Shortage,
+  type Timing,
+  type UnassignedNeed,
+  type UnassignedReason,
+} from './scheduler.ts';

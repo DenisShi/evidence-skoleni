@@ -1,74 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { employeeState, evaluateCompliance, isRequired } from '../src/compliance.ts';
 import { actionItems, buildOverview } from '../src/overview.ts';
-import type { Dataset, Employee, TrainingRecord, TrainingType } from '../src/types.ts';
+import type { Employee, TrainingRecord, TrainingType } from '../src/types.ts';
+import { dataset, done, person, REF, types } from './builders.ts';
 
-const REF = '2026-10-14';
 const options = { referenceDate: REF, warningDays: 90 };
 
-const types: TrainingType[] = [
-  { code: 'BOZP-Z', name: 'BOZP', validityMonths: 24, requirement: { kind: 'all' } },
-  {
-    code: 'LAB-BEZ',
-    name: 'Lab',
-    validityMonths: 24,
-    requirement: { kind: 'units', units: ['Laboratoře'] },
-  },
-  {
-    code: 'LEAD',
-    name: 'Vedení lidí',
-    validityMonths: null,
-    requirement: { kind: 'positions', positions: ['Vedoucí'] },
-  },
-  { code: 'ANGL', name: 'Angličtina', validityMonths: null, requirement: { kind: 'optional' } },
-];
-
-function person(id: string, overrides: Partial<Employee> = {}): Employee {
-  return {
-    id,
-    firstName: 'Jan',
-    lastName: `Novák ${id}`,
-    email: null,
-    unit: 'Knihovna',
-    unitInferred: false,
-    position: 'Knihovník',
-    managerId: null,
-    startDate: '2015-01-01',
-    endDate: null,
-    status: 'active',
-    mergedIds: [],
-    ...overrides,
-  };
-}
-
-let recordSeq = 0;
-function done(
-  employeeId: string,
-  code: string,
-  completedOn: string,
-  validUntil: string | null
-): TrainingRecord {
-  return {
-    id: `Z${++recordSeq}`,
-    employeeId,
-    code,
-    completedOn,
-    validUntil,
-    provider: 'Interní školitel',
-    costCzk: 0,
-    note: '',
-  };
-}
-
 function evaluate(employees: Employee[], records: TrainingRecord[]) {
-  const dataset: Dataset = {
-    exportDate: '2026-10-01',
-    employees,
-    trainingTypes: types,
-    records,
-    sessions: [],
-  };
-  return evaluateCompliance(dataset, options);
+  return evaluateCompliance(dataset(employees, records), options);
 }
 
 function statusOf(employee: Employee, records: TrainingRecord[], code = 'BOZP-Z') {

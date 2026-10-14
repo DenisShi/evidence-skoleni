@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { evaluateCompliance } from '../src/compliance.ts';
 import { importDataset } from '../src/import/index.ts';
 import { buildOverview } from '../src/overview.ts';
+import { planEnrollments } from '../src/scheduler.ts';
 
 // The real exports contain personal data and are not in the repository; this suite runs only
 // where they are available locally (`data/`). CI relies on the synthetic fixtures.
@@ -68,6 +69,24 @@ describe.skipIf(!available)('import of the real exports', () => {
       expired: 25,
       missing: 64,
       needsAction: 209,
+    });
+  });
+
+  it('plans every schedulable need as of 14. 10. 2026 (regression snapshot)', () => {
+    const { dataset } = run();
+    const evaluations = evaluateCompliance(dataset, {
+      referenceDate: '2026-10-14',
+      warningDays: 90,
+    });
+    const plan = planEnrollments(dataset, evaluations, '2026-10-14');
+    // 209 needs of people at work (see overview) + 7 of people on parental leave
+    expect(plan.assignments).toHaveLength(209);
+    expect(plan.unassigned.every((u) => u.reason === 'parental-leave')).toBe(true);
+    expect(plan.unassigned).toHaveLength(7);
+    expect(plan.totalCostCzk).toBe(160900);
+    expect(plan.shortages.find((s) => s.code === 'KYBER')).toMatchObject({
+      withoutSeat: 0,
+      late: 35,
     });
   });
 });
