@@ -1,0 +1,24 @@
+# Render Blueprint. After the first sync, in the dashboard:
+#   1. Environment → Secret Files: upload the four CSV exports (zamestnanci.csv,
+#      absolvovana_skoleni.csv, katalog_skoleni.csv, terminy_skoleni.csv). Render mounts them in
+#      /etc/secrets, which is the image's DATA_DIR. They are not part of the repository.
+#   2. Environment → BASIC_AUTH_USER: set the login (the password is generated, read it there).
+services:
+  - type: web
+    name: evidence-skoleni
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    # Deploy only commits that passed CI (lint, typecheck, tests, build).
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: EXPORT_DATE
+        value: '2026-10-01'
+      - key: LOG_LEVEL
+        value: info
+      - key: BASIC_AUTH_USER
+        sync: false
+      - key: BASIC_AUTH_PASSWORD
+        generateValue: true

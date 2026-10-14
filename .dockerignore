@@ -1,0 +1,13 @@
+# Personal data must never end up in an image layer – it is mounted at runtime.
+data/
+**/.env
+**/.env.*
+
+**/node_modules/
+**/dist/
+coverage/
+.git/
+.github/
+.claude/
+docs/
+*.log

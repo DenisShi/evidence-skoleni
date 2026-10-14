@@ -20,3 +20,10 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+  # The deployed artifact is the image, so a broken Dockerfile must fail CI before Render sees it.
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t evidence-skoleni .
