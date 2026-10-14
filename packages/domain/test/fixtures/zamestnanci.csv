@@ -1,0 +1,8 @@
+﻿id_zamestnance,jmeno,prijmeni,email,utvar,pozice,vedouci_email,datum_nastupu,datum_ukonceni,stav,rodne_cislo,poznamka
+E0001,Hana,Veselá,hana.vesela@test.example,Vedení,Vedoucí,,2011-10-23,,aktivní,000101/0001,
+E0002,Lenka,Horáková,lenka.horakova@test.example,,Vedoucí,hana.vesela@test.example,2016-10-18,,aktivní,000101/0002,
+E0003,  KAREL,novák,karel.novak @test.example,Laboratoře,Laborant,lenka.horakova@test.example,3. 8. 2019,,aktivní,000101/0003,"=HYPERLINK(""https://example.com"";""klik"")"
+E0004,Eva,Malá,eva.mala@test.example,Laboratore,Laborant,lenka.horakova@test.example,2020-01-01,,rodičovská,000101/0004,
+E0005,Petr,Dvořák,petr.dvorak@test,,Laborant,lenka.horakova@test.example,2020-01-01,2026-03-01,ukončen,000101/0005,
+E0006,Iva,Nová,iva.nova@test.example,Laboratoře,Laborant,nezname.jmeno@test.example,2026-11-02,,aktivní,000101/0006,
+E1000,Karel,Novak,karel.novak2@test.example,Laboratoře,Laborant,lenka.horakova@test.example,2019-08-03,,aktivní,000101/0003,

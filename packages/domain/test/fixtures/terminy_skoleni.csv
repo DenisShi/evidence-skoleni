@@ -1,0 +1,8 @@
+﻿id_terminu;kod_skoleni;datum;cas;misto;kapacita;obsazeno;cena_na_osobu;stav
+T001;KYBER;2026-11-11;09:00-12:00;Aula A;30;5;800;plánováno
+T002;KYBER;2026-11-11;09:00-12:00;Aula A;30;5;800;plánováno
+T003;KYB3R;2026-12-02;09:00-12:00;Aula B;20;0;800;plánováno
+T004;BOZP-Z;31. 9. 2026;08:00-11:00;Aula A;30;0;450;plánováno
+T005;BOZP-Z;2026-11-04;08:00-11:00;Aula A;30;31;450;plánováno
+T006;BOZP-Z;2026-12-02;08:00-11:00;Aula A;30;0;2 100 Kč;zrušeno
+T007;LAB-BEZ;2027-01-28;09:00-13:00;Laboratoř 3;0;0;;plánováno
