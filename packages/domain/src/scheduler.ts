@@ -6,8 +6,11 @@ import type { Dataset, Employee, IsoDate, Session } from './types.ts';
  * - `overdue`: already expired/missing at the reference date – any session is as soon as possible.
  * - `on-time`: the session is on or before the deadline.
  * - `late`: the deadline is still ahead, but no seat was available before it.
+ * - `after-start`: a newcomer can attend only from the first day, so a session on the start date
+ *   is the best possible; anything later means the induction has to be covered otherwise (e.g. by
+ *   the manager on day one). Not counted as a shortage – an extra session would not help.
  */
-export type Timing = 'overdue' | 'on-time' | 'late';
+export type Timing = 'overdue' | 'on-time' | 'late' | 'after-start';
 
 export interface Assignment {
   sessionId: string;
@@ -141,7 +144,9 @@ export function planEnrollments(
           ? 'overdue'
           : chosen.session.date <= deadline
             ? 'on-time'
-            : 'late',
+            : need.state === 'starting'
+              ? 'after-start'
+              : 'late',
       priceCzk: chosen.session.priceCzk,
     });
   }

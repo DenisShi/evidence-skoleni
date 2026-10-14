@@ -91,17 +91,28 @@ describe('planEnrollments', () => {
     expect(result.shortages).toEqual([]);
   });
 
-  it('books newcomers only from their start date and flags a session after the deadline as late', () => {
+  it('books newcomers only from their start date and does not count them as shortage', () => {
     const result = plan(
       [person('E1', { startDate: '2026-11-02' })],
       [],
       [session('A', 'BOZP-Z', '2026-10-20'), session('B', 'BOZP-Z', '2026-11-10')]
     );
     expect(result.assignments).toMatchObject([
-      { sessionId: 'B', deadline: '2026-11-02', timing: 'late' },
+      { sessionId: 'B', deadline: '2026-11-02', timing: 'after-start' },
     ]);
+    // An extra session before the start date would not help – the person is not employed yet.
+    expect(result.shortages).toEqual([]);
+  });
+
+  it('flags a session after the deadline as late and reports it as shortage', () => {
+    const result = plan(
+      [person('E1')],
+      [done('E1', 'BOZP-Z', '2024-11-01', '2026-11-01')],
+      [session('A', 'BOZP-Z', '2026-11-20')]
+    );
+    expect(result.assignments[0]?.timing).toBe('late');
     expect(result.shortages).toEqual([
-      { code: 'BOZP-Z', withoutSeat: 0, late: 1, earliestDeadline: '2026-11-02' },
+      { code: 'BOZP-Z', withoutSeat: 0, late: 1, earliestDeadline: '2026-11-01' },
     ]);
   });
 

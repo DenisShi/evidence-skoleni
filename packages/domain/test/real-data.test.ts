@@ -86,7 +86,7 @@ describe.skipIf(!available)('import of the real exports', () => {
     expect(plan.totalCostCzk).toBe(160900);
     expect(plan.shortages.find((s) => s.code === 'KYBER')).toMatchObject({
       withoutSeat: 0,
-      late: 35,
+      late: 32,
     });
   });
 });

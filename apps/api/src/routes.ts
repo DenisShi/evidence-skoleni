@@ -1,11 +1,27 @@
-import { DEFAULT_WARNING_DAYS, formatCz, parseDate } from '@evidence/domain';
+import {
+  DEFAULT_WARNING_DAYS,
+  formatCz,
+  parseDate,
+  type RequirementState,
+  type Timing,
+} from '@evidence/domain';
 import type { FastifyInstance, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { toCsv } from './csv-export.ts';
 import type { TrainingService } from './service.ts';
 
-const TIMING_LABEL = { overdue: 'již po termínu', 'on-time': 'včas', late: 'po termínu platnosti' };
-const STATUS_LABEL = { ok: 'platné', expiring: 'brzy vyprší', expired: 'prošlé', missing: 'chybí' };
+const TIMING_LABEL: Record<Timing, string> = {
+  overdue: 'již po termínu',
+  'on-time': 'včas',
+  late: 'po termínu platnosti',
+  'after-start': 'po nástupu',
+};
+const STATUS_LABEL: Record<RequirementState, string> = {
+  ok: 'platné',
+  expiring: 'brzy vyprší',
+  expired: 'prošlé',
+  missing: 'chybí',
+};
 
 const isoDate = z
   .string()
