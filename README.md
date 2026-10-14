@@ -135,7 +135,8 @@ a je deterministický (shoda se řeší naléhavostí a ID), takže plán jde re
   API ho neobsahuje (ověřeno testem nad syntetickými i reálnými daty).
 - Celá aplikace (včetně SPA) za Basic Auth přes HTTPS, porovnání v konstantním čase; bezpečnostní
   hlavičky, `Cache-Control: no-store` pro API, `noindex`.
-- API vrací jen pole, která UI potřebuje. Z importu se loguje jen souhrn (počty), nikdy obsah řádků.
+- API vrací jen pole, která UI potřebuje. Z importu se loguje jen souhrn (počty), nikdy obsah řádků;
+  u požadavků jen metoda a cesta – bez query (vyhledávání podle jména), hlaviček a IP adresy.
 - Export CSV neutralizuje hodnoty, které by Excel spustil jako vzorec (`=HYPERLINK(…)`, `@SUM`, `+1+1`);
   poznámky se v UI vykreslují jen jako text.
 

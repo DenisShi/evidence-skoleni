@@ -100,3 +100,14 @@ describe('CSV export escaping', () => {
     expect(toCsv(['a', 'b'], [[1, 'x']])).toBe(`${String.fromCharCode(0xfeff)}a;b\r\n1;x\r\n`);
   });
 });
+
+describe('request logging', () => {
+  it('logs the path without the query string, which can carry a name search', async () => {
+    const lines: string[] = [];
+    const app = testApp({ logLevel: 'info', logStream: { write: (line) => lines.push(line) } });
+    await app.inject({ url: '/api/employees?q=Novak' });
+    const log = lines.join('');
+    expect(log).toContain('/api/employees');
+    expect(log).not.toContain('Novak');
+  });
+});

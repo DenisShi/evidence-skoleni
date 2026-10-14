@@ -12,6 +12,7 @@ export interface AppOptions {
   auth?: BasicAuthCredentials | undefined;
   webDistDir?: string | undefined;
   logLevel?: string;
+  logStream?: { write(line: string): void };
   today?: () => string;
 }
 
@@ -19,8 +20,12 @@ export function buildApp(options: AppOptions): FastifyInstance {
   const app = Fastify({
     logger: {
       level: options.logLevel ?? 'silent',
-      // Never log credentials; URLs carry only IDs and dates, never names.
-      redact: ['req.headers.authorization'],
+      ...(options.logStream && { stream: options.logStream }),
+      serializers: {
+        // The query string can carry a name search (?q=), so only the path is logged.
+        // Headers (incl. credentials) and the client address are left out as well.
+        req: (request) => ({ method: request.method, url: request.url.split('?')[0] }),
+      },
     },
   });
 
