@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# CSV fixtures must stay byte-exact (cp1250 encoding, CRLF line endings are part of the test).
+*.csv -text

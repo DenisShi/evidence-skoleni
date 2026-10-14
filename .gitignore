@@ -1,0 +1,17 @@
+# Source data contain personal data (incl. rodná čísla) – never commit them.
+# Locally they live in data/, in production they are mounted as secret files.
+/data/
+
+node_modules/
+dist/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+playwright-report/
+test-results/
+
+# Local working notes (AI usage log, write-up drafts) – submitted separately, not part of the repo.
+/docs/
