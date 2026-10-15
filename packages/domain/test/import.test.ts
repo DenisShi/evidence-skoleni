@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { parseCsv } from '../src/csv.ts';
+import { importEmployees } from '../src/import/employees.ts';
 import { importDataset } from '../src/import/index.ts';
+import { IssueLog } from '../src/import/issues.ts';
 import type { DataIssue } from '../src/types.ts';
 
 const fixture = (name: string) => readFileSync(new URL(`./fixtures/${name}.csv`, import.meta.url));
@@ -100,6 +103,26 @@ describe('employees', () => {
   it('flags formula injection in notes and does not import employee notes', () => {
     expect(issuesFor('E0003')).toContain('vzorec-v-poznamce');
     expect(JSON.stringify(dataset.employees)).not.toContain('HYPERLINK');
+  });
+
+  it('refers to rows without a usable ID by their line in the source file', () => {
+    // Rows are processed sorted by ID; the reported line must still be the original one.
+    const table = parseCsv(
+      [
+        'id_zamestnance,jmeno,prijmeni,stav,rodne_cislo',
+        'E0002,Eva,Malá,aktivní,000101/0002',
+        'X-1,Jan,Bez ID,aktivní,000101/0003',
+        'E0001,Hana,Veselá,aktivní,000101/0001',
+      ].join('\n')
+    );
+    const log = new IssueLog();
+    const { employees } = importEmployees(table, '2026-10-01', log.for('zamestnanci'));
+    expect(employees.map((e) => e.id)).toEqual(['E0001', 'E0002']);
+    expect(log.issues.find((i) => i.type === 'neplatne-id')?.ref).toBe('řádek 3');
+  });
+
+  it('does not mention birth numbers in any finding', () => {
+    expect(JSON.stringify(report.issues)).not.toMatch(/rodne_cislo|\d{6}\/\d{3,4}/);
   });
 });
 

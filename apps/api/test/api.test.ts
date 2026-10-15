@@ -109,9 +109,14 @@ describe('GET /api/employees/:id', () => {
     );
   });
 
-  it('answers 404 for unknown and 400 for malformed IDs', async () => {
+  it('answers 404 for unknown and 400 for malformed IDs or dates', async () => {
     expect((await get('/api/employees/E9999')).status).toBe(404);
     expect((await get('/api/employees/robert')).status).toBe(400);
+    expect((await get('/api/employees/E0003?asOf=2026-13-01')).status).toBe(400);
+  });
+
+  it('finds a merged duplicate under the surviving ID only', async () => {
+    expect((await get('/api/employees/E1000')).status).toBe(404);
   });
 });
 
@@ -141,6 +146,20 @@ describe('GET /api/plan.csv', () => {
     expect(res.headers['content-disposition']).toContain(`plan-prihlasek-${TODAY}.csv`);
     expect(res.body.charCodeAt(0)).toBe(0xfeff);
     expect(res.body.split('\r\n')[0]).toContain('Termín;Kód;Školení');
+  });
+
+  it('has one row per recommended enrollment', async () => {
+    const plan = (await get<PlanResponse>('/api/plan?asOf=2026-10-20')).body;
+    const res = await app.inject({ url: '/api/plan.csv?asOf=2026-10-20' });
+    const rows = res.body.trimEnd().split('\r\n').slice(1);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows).toHaveLength(plan.sessions.reduce((n, s) => n + s.assigned.length, 0));
+    expect(res.headers['content-disposition']).toContain('plan-prihlasek-2026-10-20.csv');
+  });
+
+  it('rejects an invalid reference date instead of putting it into the file name', async () => {
+    const res = await app.inject({ url: '/api/plan.csv?asOf=..%2F..%2Fetc' });
+    expect(res.statusCode).toBe(400);
   });
 });
 
@@ -178,6 +197,10 @@ describe('sensitive data', () => {
       'x-frame-options': 'DENY',
       'cache-control': 'no-store',
     });
+  });
+
+  it('limits the length of free-text filters', async () => {
+    expect((await get(`/api/employees?q=${'a'.repeat(101)}`)).status).toBe(400);
   });
 
   it('answers unknown API paths with 404', async () => {

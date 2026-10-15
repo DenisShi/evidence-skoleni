@@ -3,7 +3,7 @@ import { Input, Table, Tag, Typography } from 'antd';
 import { useMemo } from 'react';
 import { useDataQuality } from '../api/queries.ts';
 import { QueryState } from '../components/common.tsx';
-import { SEVERITY, SOURCE_FILE } from '../labels.ts';
+import { plural, SEVERITY, SOURCE_FILE } from '../labels.ts';
 import { useUrlState } from '../url-state.ts';
 
 export function KvalitaDat() {
@@ -82,7 +82,11 @@ function IssuesTable({
         size="small"
         rowKey={(i) => `${i.file}|${i.ref}|${i.type}|${i.message}`}
         dataSource={filtered}
-        pagination={{ defaultPageSize: 50, showSizeChanger: true, showTotal: (n) => `${n} nálezů` }}
+        pagination={{
+          defaultPageSize: 50,
+          showSizeChanger: true,
+          showTotal: (n) => plural(n, 'nález', 'nálezy', 'nálezů'),
+        }}
         scroll={{ x: true }}
         columns={[
           {

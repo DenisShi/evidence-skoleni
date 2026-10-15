@@ -136,7 +136,7 @@ export function ZamestnanecDetail() {
               </Typography.Title>
               <Table<DataIssue>
                 size="small"
-                rowKey={(i) => `${i.file}|${i.ref}|${i.type}`}
+                rowKey={(i) => `${i.file}|${i.ref}|${i.type}|${i.message}`}
                 pagination={false}
                 dataSource={e.issues}
                 columns={[

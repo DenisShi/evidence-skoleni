@@ -5,7 +5,13 @@ import { Alert, Button, Collapse, Space, Table, Tag, Typography } from 'antd';
 import { apiUrl } from '../api/client.ts';
 import { useMeta, usePlan } from '../api/queries.ts';
 import { EmployeeLink, QueryState, StateTag, StatusTag, TimingTag } from '../components/common.tsx';
-import { formatCzk, formatDate, UNASSIGNED_REASON, UNUSABLE_SESSION_REASON } from '../labels.ts';
+import {
+  formatCzk,
+  formatDate,
+  plural,
+  UNASSIGNED_REASON,
+  UNUSABLE_SESSION_REASON,
+} from '../labels.ts';
 import { useSnapshotParams } from '../url-state.ts';
 
 type Assigned = PlanSessionDto['assigned'][number];
@@ -38,10 +44,10 @@ export function PlanPrihlasek() {
               type="info"
               showIcon
               style={{ marginBottom: 16 }}
-              title={`Navrženo ${assigned} přihlášek, odhad nákladů ${formatCzk(data.totalCostCzk)}`}
+              title={`Doporučené přihlášky: ${assigned}, odhad nákladů ${formatCzk(data.totalCostCzk)}`}
               description={
                 data.assignmentsWithoutPrice > 0
-                  ? `${data.assignmentsWithoutPrice} přihlášek je na termíny bez uvedené ceny – nejsou v součtu.`
+                  ? `Přihlášky na termíny bez uvedené ceny (${data.assignmentsWithoutPrice}) nejsou v součtu.`
                   : undefined
               }
             />
@@ -67,7 +73,7 @@ export function PlanPrihlasek() {
                       title: 'Doporučení',
                       key: 'advice',
                       render: (_, s) =>
-                        `Vypsat další termín${s.withoutSeat > 0 ? ` (aspoň ${s.withoutSeat} míst)` : ''} nejlépe do ${formatDate(s.earliestDeadline)}.`,
+                        `Vypsat další termín${s.withoutSeat > 0 ? ` (aspoň ${plural(s.withoutSeat, 'místo', 'místa', 'míst')})` : ''} nejlépe do ${formatDate(s.earliestDeadline)}.`,
                     },
                   ]}
                 />

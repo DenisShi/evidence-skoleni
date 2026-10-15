@@ -3,7 +3,7 @@ import { Table, Tag, Typography } from 'antd';
 import { useActions, useMeta } from '../api/queries.ts';
 import { EmployeeLink, QueryState, StateTag, StatusTag, TimingTag } from '../components/common.tsx';
 import { type FilterKey, Filters } from '../components/Filters.tsx';
-import { daysLeftLabel, formatDate, STATUS, UNASSIGNED_REASON } from '../labels.ts';
+import { daysLeftLabel, formatDate, plural, STATUS, UNASSIGNED_REASON } from '../labels.ts';
 import { useSnapshotParams, useUrlState } from '../url-state.ts';
 
 const FILTERS: FilterKey[] = ['q', 'unit', 'managerId', 'code', 'status', 'state'];
@@ -31,7 +31,7 @@ export function CoResit() {
             pagination={{
               defaultPageSize: 50,
               showSizeChanger: true,
-              showTotal: (n) => `${n} položek`,
+              showTotal: (n) => plural(n, 'položka', 'položky', 'položek'),
             }}
             scroll={{ x: true }}
             columns={[

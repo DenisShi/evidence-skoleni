@@ -5,6 +5,7 @@ import {
   foldKey,
   planEnrollments,
   type Assignment,
+  type DataIssue,
   type Dataset,
   type Employee,
   type EmployeeCompliance,
@@ -13,6 +14,7 @@ import {
   type ImportReport,
   type IsoDate,
   type RequirementState,
+  type TrainingRecord,
   type UnassignedNeed,
 } from '@evidence/domain';
 import type {
@@ -64,6 +66,11 @@ const needKey = (employeeId: string, code: string) => `${employeeId}|${code}`;
 export class TrainingService {
   private readonly employeeById: Map<string, Employee>;
   private readonly reportsByManager: Map<string, Employee[]>;
+  private readonly trainingName: Map<string, string>;
+  /** Counted records per employee, newest first. */
+  private readonly recordsByEmployee: Map<string, TrainingRecord[]>;
+  /** Import findings about employee and record rows, by the row's ID. */
+  private readonly issuesByRef: Map<string, DataIssue[]>;
   private readonly snapshots = new Map<string, Snapshot>();
 
   constructor(
@@ -74,6 +81,15 @@ export class TrainingService {
     this.reportsByManager = Map.groupBy(
       dataset.employees.filter((e) => e.managerId !== null),
       (e) => e.managerId!
+    );
+    this.trainingName = new Map(dataset.trainingTypes.map((t) => [t.code, t.name]));
+    this.recordsByEmployee = Map.groupBy(
+      dataset.records.toSorted((a, b) => b.completedOn.localeCompare(a.completedOn)),
+      (r) => r.employeeId
+    );
+    this.issuesByRef = Map.groupBy(
+      report.issues.filter((i) => i.file === 'zamestnanci' || i.file === 'absolvovana_skoleni'),
+      (i) => i.ref
     );
   }
 
@@ -152,9 +168,9 @@ export class TrainingService {
     if (!evaluation) return null;
     const { employee, state, requirements } = evaluation;
     const manager = employee.managerId ? this.employeeById.get(employee.managerId) : undefined;
-    const typeName = new Map(this.dataset.trainingTypes.map((t) => [t.code, t.name]));
-    const records = this.dataset.records.filter((r) => r.employeeId === id);
-    const ownRefs = new Set([id, ...employee.mergedIds, ...records.map((r) => r.id)]);
+    const records = this.recordsByEmployee.get(id) ?? [];
+    // Excluded records are not in the dataset, so their findings are not listed here.
+    const ownRefs = [id, ...employee.mergedIds, ...records.map((r) => r.id)];
 
     return {
       id,
@@ -171,7 +187,7 @@ export class TrainingService {
       mergedIds: employee.mergedIds,
       requirements: requirements.map((r) => ({
         code: r.code,
-        name: typeName.get(r.code) ?? r.code,
+        name: this.trainingName.get(r.code) ?? r.code,
         status: r.status,
         lastCompletedOn: r.lastCompletedOn,
         validUntil: r.validUntil,
@@ -181,25 +197,24 @@ export class TrainingService {
         waivedReason: r.waivedReason,
         planned: plannedRef(snapshot.assignmentByNeed.get(needKey(id, r.code))),
       })),
-      history: records
-        .map(({ id: recordId, code, completedOn, validUntil, provider, note }) => ({
-          id: recordId,
-          code,
-          completedOn,
-          validUntil,
-          provider,
-          note,
-        }))
-        .sort((a, b) => b.completedOn.localeCompare(a.completedOn)),
-      issues: this.report.issues.filter(
-        (i) => (i.file === 'zamestnanci' || i.file === 'absolvovana_skoleni') && ownRefs.has(i.ref)
-      ),
+      history: records.map(({ id: recordId, code, completedOn, validUntil, provider, note }) => ({
+        id: recordId,
+        code,
+        completedOn,
+        validUntil,
+        provider,
+        note,
+      })),
+      issues: ownRefs.flatMap((ref) => this.issuesByRef.get(ref) ?? []),
     };
   }
 
   plan(params: SnapshotParams): PlanResponse {
-    const { plan } = this.snapshot(params);
-    const typeName = new Map(this.dataset.trainingTypes.map((t) => [t.code, t.name]));
+    const { plan, byEmployee } = this.snapshot(params);
+    const person = (employeeId: string) => {
+      const { employee, state } = byEmployee.get(employeeId)!;
+      return personRef(employee, state);
+    };
     const assignmentBySessionAndEmployee = new Map(
       plan.assignments.map((a) => [`${a.sessionId}|${a.employeeId}`, a])
     );
@@ -210,7 +225,7 @@ export class TrainingService {
       sessions: plan.sessions.map(({ session, freeSeats, assignedEmployeeIds }) => ({
         id: session.id,
         code: session.code,
-        name: typeName.get(session.code) ?? session.code,
+        name: this.trainingName.get(session.code) ?? session.code,
         date: session.date,
         time: session.time,
         place: session.place,
@@ -221,7 +236,7 @@ export class TrainingService {
         assigned: assignedEmployeeIds.map((employeeId) => {
           const a = assignmentBySessionAndEmployee.get(`${session.id}|${employeeId}`)!;
           return {
-            ...this.personRef(employeeId, params),
+            ...person(employeeId),
             status: a.status,
             deadline: a.deadline,
             timing: a.timing,
@@ -243,7 +258,7 @@ export class TrainingService {
                 : ('no-capacity' as const),
         })),
       unassigned: plan.unassigned.map((u) => ({
-        ...this.personRef(u.employeeId, params),
+        ...person(u.employeeId),
         code: u.code,
         status: u.status,
         deadline: u.deadline,
@@ -320,11 +335,6 @@ export class TrainingService {
   private managerName(employee: Employee): string | null {
     const manager = employee.managerId ? this.employeeById.get(employee.managerId) : undefined;
     return manager ? displayName(manager) : null;
-  }
-
-  private personRef(employeeId: string, params: SnapshotParams): PersonRef {
-    const evaluation = this.snapshot(params).byEmployee.get(employeeId)!;
-    return personRef(evaluation.employee, evaluation.state);
   }
 }
 

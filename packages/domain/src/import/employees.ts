@@ -30,20 +30,23 @@ export function importEmployees(
 ): EmployeesImport {
   const normalizeUnit = buildUnitNormalizer(table.rows.map((r) => r.utvar ?? ''));
   const employees: Employee[] = [];
+  const employeeById = new Map<string, Employee>();
   const mergedInto = new Map<string, string>();
   const exportedNames = new Map<string, string>();
   // Birth number is used only here to detect the same person exported twice; it is not stored.
   const idByBirthNumber = new Map<string, string>();
   const managerEmailById = new Map<string, string>();
 
-  const rows = [...table.rows].sort((a, b) =>
-    (a.id_zamestnance ?? '').localeCompare(b.id_zamestnance ?? '')
-  );
-  for (const [index, row] of rows.entries()) {
+  // Sorted by ID so that the lower ID of a duplicate pair is kept; the line number (header = 1)
+  // is remembered for rows that have no usable ID to refer to.
+  const rows = table.rows
+    .map((row, index) => ({ row, line: index + 2 }))
+    .sort((a, b) => (a.row.id_zamestnance ?? '').localeCompare(b.row.id_zamestnance ?? ''));
+  for (const { row, line } of rows) {
     const id = (row.id_zamestnance ?? '').trim();
     if (!/^E\d{4}$/.test(id)) {
       addIssue(
-        `řádek ${index + 2}`,
+        `řádek ${line}`,
         'neplatne-id',
         'error',
         `Neplatné ID zaměstnance „${id}“ – řádek vynechán.`
@@ -56,7 +59,7 @@ export function importEmployees(
     const original = birthNumber ? idByBirthNumber.get(birthNumber) : undefined;
     if (original) {
       mergedInto.set(id, original);
-      employees.find((e) => e.id === original)?.mergedIds.push(id);
+      employeeById.get(original)?.mergedIds.push(id);
       addIssue(
         id,
         'duplicitni-zamestnanec',
@@ -137,7 +140,7 @@ export function importEmployees(
       );
     }
 
-    employees.push({
+    const employee: Employee = {
       id,
       firstName,
       lastName,
@@ -150,7 +153,9 @@ export function importEmployees(
       endDate,
       status,
       mergedIds: [],
-    });
+    };
+    employees.push(employee);
+    employeeById.set(id, employee);
   }
 
   resolveManagers(employees, managerEmailById, addIssue);

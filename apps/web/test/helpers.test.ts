@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { apiUrl } from '../src/api/client.ts';
-import { daysLeftLabel, formatCzk, formatDate, percent } from '../src/labels.ts';
+import { daysLeftLabel, formatCzk, formatDate, percent, plural } from '../src/labels.ts';
 
 describe('apiUrl', () => {
   it('drops empty parameters', () => {
@@ -29,6 +29,13 @@ describe('formatting', () => {
     expect(daysLeftLabel(48)).toBe('za 48 dní');
     expect(daysLeftLabel(1)).toBe('za 1 den');
     expect(daysLeftLabel(-3)).toBe('3 dny po termínu');
+  });
+
+  it('uses the Czech noun form for counts', () => {
+    expect(plural(1, 'místo', 'místa', 'míst')).toBe('1 místo');
+    expect(plural(4, 'místo', 'místa', 'míst')).toBe('4 místa');
+    expect(plural(5, 'místo', 'místa', 'míst')).toBe('5 míst');
+    expect(plural(0, 'místo', 'místa', 'míst')).toBe('0 míst');
   });
 
   it('formats money and percentages', () => {

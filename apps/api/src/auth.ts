@@ -19,10 +19,9 @@ export function registerBasicAuth(app: FastifyInstance, credentials: BasicAuthCr
   app.addHook('onRequest', async (request, reply) => {
     if (PUBLIC_PATHS.has(request.url.split('?')[0] ?? '')) return;
 
-    const header = request.headers.authorization ?? '';
-    const [scheme, encoded] = header.split(' ');
-    const supplied =
-      scheme === 'Basic' && encoded ? Buffer.from(encoded, 'base64').toString('utf8') : '';
+    // The scheme name is case-insensitive (RFC 7235); anything else malformed fails the comparison.
+    const match = /^basic\s+(\S+)\s*$/i.exec(request.headers.authorization ?? '');
+    const supplied = match ? Buffer.from(match[1]!, 'base64').toString('utf8') : '';
     if (!timingSafeEqual(digest(supplied), expected)) {
       return reply
         .code(401)

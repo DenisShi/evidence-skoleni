@@ -81,10 +81,15 @@ export function percent(part: number, total: number): string {
   return total === 0 ? '—' : `${Math.round((part / total) * 100)} %`;
 }
 
-/** Czech plural of „den“: 1 den, 2–4 dny, 5+ dní. */
-export function days(n: number): string {
+/** Count with the Czech noun form: `plural(3, 'den', 'dny', 'dní')` → `3 dny`; 0 and 5+ take the last. */
+export function plural(n: number, one: string, few: string, many: string): string {
   const abs = Math.abs(n);
-  return `${abs} ${abs === 1 ? 'den' : abs >= 2 && abs <= 4 ? 'dny' : 'dní'}`;
+  return `${n} ${abs === 1 ? one : abs >= 2 && abs <= 4 ? few : many}`;
+}
+
+/** Number of days without sign: 1 den, 2–4 dny, 5+ dní. */
+export function days(n: number): string {
+  return plural(Math.abs(n), 'den', 'dny', 'dní');
 }
 
 /** Text for a deadline relative to the reference date. */

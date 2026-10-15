@@ -3,6 +3,7 @@ import { Table, Tooltip, Typography } from 'antd';
 import { useEmployees } from '../api/queries.ts';
 import { EmployeeLink, QueryState, StateTag, StatusTag } from '../components/common.tsx';
 import { type FilterKey, Filters } from '../components/Filters.tsx';
+import { plural } from '../labels.ts';
 import { useSnapshotParams, useUrlState } from '../url-state.ts';
 
 const FILTERS: FilterKey[] = ['q', 'unit', 'managerId', 'state'];
@@ -25,7 +26,7 @@ export function Zamestnanci() {
             pagination={{
               defaultPageSize: 50,
               showSizeChanger: true,
-              showTotal: (n) => `${n} zaměstnanců`,
+              showTotal: (n) => plural(n, 'zaměstnanec', 'zaměstnanci', 'zaměstnanců'),
             }}
             scroll={{ x: true }}
             columns={[

@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { useMeta, useOverview } from '../api/queries.ts';
 import { QueryState } from '../components/common.tsx';
 import { Filters } from '../components/Filters.tsx';
-import { EMPLOYEE_STATE, percent } from '../labels.ts';
+import { EMPLOYEE_STATE, percent, plural } from '../labels.ts';
 import { useLinkWithSnapshot, useSnapshotParams, useUrlState } from '../url-state.ts';
 
 type UnitRow = StatusCounts & { unit: string };
@@ -63,14 +63,15 @@ export function Prehled() {
                       />
                     </Link>
                     <Typography.Text type="secondary">
-                      {data.totals.expired} prošlých, {data.totals.missing} chybějících
+                      {plural(data.totals.expired, 'prošlé', 'prošlá', 'prošlých')},{' '}
+                      {plural(data.totals.missing, 'chybějící', 'chybějící', 'chybějících')}
                     </Typography.Text>
                   </Card>
                 </Col>
                 <Col xs={12} md={6}>
                   <Card>
                     <Statistic
-                      title={`Vyprší do ${data.warningDays} dní`}
+                      title={`Vyprší do ${data.warningDays === 1 ? '1 dne' : `${data.warningDays} dní`}`}
                       value={data.totals.expiring}
                       styles={{ content: { color: '#d48806' } }}
                     />

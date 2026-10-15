@@ -133,8 +133,12 @@ a je deterministický (shoda se řeší naléhavostí a ID), takže plán jde re
 - CSV nejsou v gitu ani v Docker image (`.gitignore`, `.dockerignore`); v produkci jsou to Secret Files.
 - Rodné číslo se použije jen při importu k sloučení duplicit a dál se neuchovává – žádná odpověď
   API ho neobsahuje (ověřeno testem nad syntetickými i reálnými daty).
-- Celá aplikace (včetně SPA) za Basic Auth přes HTTPS, porovnání v konstantním čase; bezpečnostní
-  hlavičky, `Cache-Control: no-store` pro API, `noindex`.
+- Celá aplikace (včetně SPA, exportu a reportu kvality) za Basic Auth přes HTTPS, porovnání
+  v konstantním čase. Heslo má min. 12 znaků a na Renderu ho generuje platforma, takže hádání hesla
+  nehrozí ani bez omezení počtu pokusů (to by za proxy Renderu stejně šlo obejít podvrženou IP).
+- Bezpečnostní hlavičky: Content-Security-Policy (skripty jen z vlastního původu, žádné vkládání
+  do rámů), HSTS, `nosniff`, `Referrer-Policy: no-referrer`, `noindex`; `Cache-Control: no-store`
+  pro API. Chyby serveru se klientovi hlásí jen stavem, podrobnosti jdou do logu.
 - API vrací jen pole, která UI potřebuje. Z importu se loguje jen souhrn (počty), nikdy obsah řádků;
   u požadavků jen metoda a cesta – bez query (vyhledávání podle jména), hlaviček a IP adresy.
 - Export CSV neutralizuje hodnoty, které by Excel spustil jako vzorec (`=HYPERLINK(…)`, `@SUM`, `+1+1`);
@@ -145,12 +149,14 @@ a je deterministický (shoda se řeší naléhavostí a ID), takže plán jde re
 Doména: parsery, import nad syntetickými fixtures (každý řádek napodobuje jednu anomálii
 z reálných dat, `packages/domain/test/fixtures`), pravidla, stavy a plánovač včetně krajních případů.
 Regresní testy nad reálnými daty se spustí jen tam, kde jsou data k dispozici (v CI ne).
-API: testy přes `fastify.inject` (filtry, validace, Basic Auth, export, absence rodných čísel).
-Web: pomocné funkce a render stránky s mockovaným API.
+API: testy přes `fastify.inject` (filtry, validace, Basic Auth včetně chybných hlaviček, export,
+absence rodných čísel, bezpečnostní hlavičky, chyby bez interních detailů, log bez query a hesel,
+cache statických souborů, časové pásmo). Web: pomocné funkce a render stránek s mockovaným API
+(co řešit, detail – poznámky jen jako text, neexistující zaměstnanec –, plán přihlášek).
 
 ## Co dál
 
 Databáze a ukládání potvrzených přihlášek (a jejich započtení do obsazenosti); nahrávání nových
 exportů přes UI; přihlášení přes SSO univerzity a role (HR × vedoucí vidí jen své lidi);
 upozornění e-mailem vedoucím; napojení na personální systém místo CSV; optimalizace plánu jako
-min-cost flow (např. preference lokality); code-splitting webu.
+min-cost flow (např. preference lokality).

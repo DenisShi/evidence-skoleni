@@ -3,6 +3,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { Alert, Spin, Tag, Tooltip } from 'antd';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
+import { ApiError } from '../api/client.ts';
 import { EMPLOYEE_STATE, STATUS, TIMING } from '../labels.ts';
 import { useLinkWithSnapshot } from '../url-state.ts';
 
@@ -15,7 +16,10 @@ export function QueryState<T>({
   children: (data: T) => ReactNode;
 }) {
   if (query.isError) {
-    return (
+    const notFound = query.error instanceof ApiError && query.error.status === 404;
+    return notFound ? (
+      <Alert type="warning" showIcon title="Záznam neexistuje" />
+    ) : (
       <Alert
         type="error"
         showIcon
