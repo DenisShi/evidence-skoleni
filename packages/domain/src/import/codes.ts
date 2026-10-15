@@ -1,7 +1,7 @@
 import { buildCanonicalSpelling, foldKey } from '../text.ts';
 
 /**
- * ` bozp_z ` → `BOZP-Z`, then explicit typo corrections from {@link CODE_ALIASES}.
+ * ` bozp_z ` -> `BOZP-Z`, then explicit typo corrections from {@link CODE_ALIASES}.
  * Unknown codes are not guessed.
  */
 export function normalizeCode(raw: string): string {
@@ -32,7 +32,7 @@ export const CODE_ALIASES: Readonly<Record<string, string>> = {
 /**
  * Unit names come in many spellings (`SPRÁVA BUDOV`, `Sprava budov`, `Studijní` for
  * `Studijní oddělení`). Spellings are grouped by folded key, the majority spelling wins, and a
- * key that is a word-prefix of exactly one other key (`studijni` → `studijni oddeleni`) is merged.
+ * key that is a word-prefix of exactly one other key (`studijni` -> `studijni oddeleni`) is merged.
  */
 export function buildUnitNormalizer(rawUnits: readonly string[]): (raw: string) => string | null {
   const spelling = buildCanonicalSpelling(rawUnits);

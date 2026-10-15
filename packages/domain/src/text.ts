@@ -1,9 +1,9 @@
-/** Comparison key: no diacritics, lower case, single spaces. `  SPRÁVA  budov ` → `sprava budov`. */
+/** Comparison key: no diacritics, lower case, single spaces. `  SPRÁVA  budov ` -> `sprava budov`. */
 export function foldKey(value: string): string {
   return value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
-/** `  LUCIE` → `Lucie`, `růžička` → `Růžička`. */
+/** `  LUCIE` -> `Lucie`, `růžička` -> `Růžička`. */
 export function normalizePersonName(value: string): string {
   return value
     .trim()

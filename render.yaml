@@ -1,8 +1,8 @@
 # Render Blueprint. After the first sync, in the dashboard:
-#   1. Environment → Secret Files: upload the four CSV exports (zamestnanci.csv,
+#   1. Environment > Secret Files: upload the four CSV exports (zamestnanci.csv,
 #      absolvovana_skoleni.csv, katalog_skoleni.csv, terminy_skoleni.csv). Render mounts them in
 #      /etc/secrets, which is the image's DATA_DIR. They are not part of the repository.
-#   2. Environment → BASIC_AUTH_USER: set the login (the password is generated, read it there).
+#   2. Environment > BASIC_AUTH_USER: set the login (the password is generated, read it there).
 services:
   - type: web
     name: evidence-skoleni

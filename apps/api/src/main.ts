@@ -25,7 +25,7 @@ app.log.info(
   'data imported'
 );
 if (!config.BASIC_AUTH_USER)
-  app.log.warn('Basic auth is disabled – use only for local development');
+  app.log.warn('Basic auth is disabled - use only for local development');
 
 // The platform stops containers with SIGTERM; as PID 1, Node would otherwise ignore it and get killed
 // after the grace period with requests still in flight.

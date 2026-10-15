@@ -7,7 +7,7 @@ export type DateParseResult =
 const ISO = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
 // `3. 8. 2019` and `03.08.2019`
 const CZ = /^(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})$/;
-// Excel serial day numbers that leaked into the export (e.g. `43552`); bounded to 1955–2064.
+// Excel serial day numbers that leaked into the export (e.g. `43552`); bounded to 1955-2064.
 const EXCEL_SERIAL = /^\d{5}$/;
 const EXCEL_EPOCH_UTC = Date.UTC(1899, 11, 30);
 const DAY_MS = 86_400_000;
@@ -58,7 +58,7 @@ function toUtc(date: IsoDate): Date {
   return new Date(`${date}T00:00:00Z`);
 }
 
-/** Adds calendar months; the day is clamped to the end of the target month (31. 1. + 1 → 28. 2.). */
+/** Adds calendar months; the day is clamped to the end of the target month (31. 1. + 1 -> 28. 2.). */
 export function addMonths(date: IsoDate, months: number): IsoDate {
   const d = toUtc(date);
   const target = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + months, 1));
@@ -82,7 +82,7 @@ export function minDate(a: IsoDate, b: IsoDate): IsoDate {
   return a <= b ? a : b;
 }
 
-/** Czech display format used in messages: `2026-10-01` → `1. 10. 2026`. */
+/** Czech display format used in messages: `2026-10-01` -> `1. 10. 2026`. */
 export function formatCz(date: IsoDate): string {
   const [y, m, d] = date.split('-');
   return `${Number(d)}. ${Number(m)}. ${y}`;

@@ -22,7 +22,7 @@ const envSchema = z
     message: 'BASIC_AUTH_USER and BASIC_AUTH_PASSWORD must be set together',
   })
   .refine((env) => env.NODE_ENV !== 'production' || Boolean(env.BASIC_AUTH_USER), {
-    message: 'Basic auth is mandatory in production – the data contain personal information',
+    message: 'Basic auth is mandatory in production - the data contain personal information',
   });
 
 export type Config = z.infer<typeof envSchema>;

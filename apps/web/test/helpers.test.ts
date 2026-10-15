@@ -20,7 +20,7 @@ describe('apiUrl', () => {
 describe('formatting', () => {
   it('formats dates the Czech way', () => {
     expect(formatDate('2026-10-01')).toBe('1. 10. 2026');
-    expect(formatDate(null)).toBe('—');
+    expect(formatDate(null)).toBe('-');
   });
 
   it('describes days relative to the deadline', () => {
@@ -39,9 +39,9 @@ describe('formatting', () => {
   });
 
   it('formats money and percentages', () => {
-    expect(formatCzk(null)).toBe('—');
+    expect(formatCzk(null)).toBe('-');
     expect(formatCzk(160900).replace(/\s/g, ' ')).toBe('160 900 Kč');
     expect(percent(662, 751)).toBe('88 %');
-    expect(percent(0, 0)).toBe('—');
+    expect(percent(0, 0)).toBe('-');
   });
 });

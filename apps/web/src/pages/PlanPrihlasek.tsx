@@ -37,7 +37,7 @@ export function PlanPrihlasek() {
             </Space>
             <Typography.Paragraph type="secondary">
               Návrh, koho na který termín přihlásit. Nejdřív se obsazují lidé s nejbližším termínem
-              platnosti, každý na nejbližší termín s volným místem. Volná místa = kapacita −
+              platnosti, každý na nejbližší termín s volným místem. Volná místa = kapacita -
               obsazeno podle exportu.
             </Typography.Paragraph>
             <Alert
@@ -65,7 +65,7 @@ export function PlanPrihlasek() {
                     {
                       title: 'Školení',
                       dataIndex: 'code',
-                      render: (c: string) => `${c} – ${trainingName.get(c) ?? ''}`,
+                      render: (c: string) => `${c} - ${trainingName.get(c) ?? ''}`,
                     },
                     { title: 'Bez místa', dataIndex: 'withoutSeat', align: 'right' },
                     { title: 'Místo až po konci platnosti', dataIndex: 'late', align: 'right' },
@@ -88,7 +88,7 @@ export function PlanPrihlasek() {
                   <Space wrap>
                     <strong>{formatDate(s.date)}</strong>
                     <span>
-                      {s.id} · {s.code} – {s.name}
+                      {s.id}: {s.code} - {s.name}
                     </span>
                     <Typography.Text type="secondary">
                       {s.time}, {s.place}

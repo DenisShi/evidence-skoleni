@@ -104,7 +104,7 @@ function resolveRequirementUnits(
           type.code,
           'neznamy-utvar',
           'warning',
-          `Útvar „${raw}“ z pravidla povinnosti nemá žádného zaměstnance.`
+          `Útvar "${raw}" z pravidla povinnosti nemá žádného zaměstnance.`
         );
       }
       return unit ?? raw;

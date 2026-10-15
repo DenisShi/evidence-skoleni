@@ -23,7 +23,7 @@ describe('employeeState', () => {
     [{ endDate: '2027-01-20' }, 'leaving'],
     [{ status: 'parental_leave' as const }, 'parental_leave'],
     [{ startDate: '2026-11-02' }, 'starting'],
-  ])('%o → %s', (overrides, state) => {
+  ])('%o -> %s', (overrides, state) => {
     expect(employeeState(person('E1', overrides), REF)).toBe(state);
   });
 });
@@ -184,7 +184,7 @@ describe('overview and action items', () => {
     });
   });
 
-  it('aggregates by training, by unit and by unit × training', () => {
+  it('aggregates by training, by unit and by unit and training', () => {
     const overview = buildOverview(evaluations);
     expect(overview.byTraining.find((t) => t.code === 'BOZP-Z')).toMatchObject({
       total: 2,

@@ -188,7 +188,7 @@ describe('todayInPrague', () => {
     ['2026-10-14T21:30:00Z', '2026-10-14'], // 23:30 summer time
     ['2026-10-14T22:30:00Z', '2026-10-15'], // already the next day in Prague, not yet in UTC
     ['2026-12-31T23:30:00Z', '2027-01-01'], // winter time, UTC+1
-  ])('%s → %s', (instant, expected) => {
+  ])('%s -> %s', (instant, expected) => {
     expect(todayInPrague(new Date(instant))).toBe(expected);
   });
 });
@@ -220,7 +220,7 @@ describe('CSV export escaping', () => {
     ['Novák; Karel', '"Novák; Karel"'],
     ['řádek 1\nřádek 2', '"řádek 1\nřádek 2"'],
     ['Laboratoře', 'Laboratoře'],
-  ])('%s → %s', (value, expected) => {
+  ])('%s -> %s', (value, expected) => {
     expect(escapeCell(value)).toBe(expected);
   });
 

@@ -100,7 +100,7 @@ describe('planEnrollments', () => {
     expect(result.assignments).toMatchObject([
       { sessionId: 'B', deadline: '2026-11-02', timing: 'after-start' },
     ]);
-    // An extra session before the start date would not help – the person is not employed yet.
+    // An extra session before the start date would not help - the person is not employed yet.
     expect(result.shortages).toEqual([]);
   });
 

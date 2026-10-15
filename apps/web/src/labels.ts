@@ -33,23 +33,23 @@ export const TIMING: Record<Timing, { label: string; color: string; hint: string
   'after-start': {
     label: 'Po nástupu',
     color: 'blue',
-    hint: 'Nastupující: první termín je až po dni nástupu – vstupní školení zajistit při nástupu jinak (např. vedoucí).',
+    hint: 'Nastupující: první termín je až po dni nástupu - vstupní školení zajistit při nástupu jinak (např. vedoucí).',
   },
   late: {
     label: 'Pozdě',
     color: 'orange',
-    hint: 'Volné místo je až po konci platnosti – chybí dřívější termín.',
+    hint: 'Volné místo je až po konci platnosti - chybí dřívější termín.',
   },
 };
 
 export const UNASSIGNED_REASON: Record<UnassignedReason, string> = {
-  'parental-leave': 'Na rodičovské – naplánovat po návratu',
+  'parental-leave': 'Na rodičovské - naplánovat po návratu',
   'no-session': 'Není vypsán žádný použitelný termín',
   'no-capacity': 'Všechny termíny jsou plné',
 };
 
 export const UNUSABLE_SESSION_REASON = {
-  past: 'Proběhl (datum ≤ referenční datum)',
+  past: 'Proběhl (nejpozději k referenčnímu datu)',
   cancelled: 'Zrušen',
   duplicate: 'Duplicitní řádek',
   'no-capacity': 'Kapacita 0',
@@ -68,33 +68,33 @@ export const SOURCE_FILE: Record<SourceFile, string> = {
   terminy_skoleni: 'terminy_skoleni.csv',
 };
 
-/** `2026-10-01` → `1. 10. 2026`; empty for missing dates. */
+/** `2026-10-01` -> `1. 10. 2026`; empty for missing dates. */
 export function formatDate(date: string | null | undefined): string {
-  return date ? dayjs(date).format('D. M. YYYY') : '—';
+  return date ? dayjs(date).format('D. M. YYYY') : '-';
 }
 
 export function formatCzk(amount: number | null): string {
-  return amount === null ? '—' : `${amount.toLocaleString('cs-CZ')} Kč`;
+  return amount === null ? '-' : `${amount.toLocaleString('cs-CZ')} Kč`;
 }
 
 export function percent(part: number, total: number): string {
-  return total === 0 ? '—' : `${Math.round((part / total) * 100)} %`;
+  return total === 0 ? '-' : `${Math.round((part / total) * 100)} %`;
 }
 
-/** Count with the Czech noun form: `plural(3, 'den', 'dny', 'dní')` → `3 dny`; 0 and 5+ take the last. */
+/** Count with the Czech noun form: `plural(3, 'den', 'dny', 'dní')` -> `3 dny`; 0 and 5+ take the last. */
 export function plural(n: number, one: string, few: string, many: string): string {
   const abs = Math.abs(n);
   return `${n} ${abs === 1 ? one : abs >= 2 && abs <= 4 ? few : many}`;
 }
 
-/** Number of days without sign: 1 den, 2–4 dny, 5+ dní. */
+/** Number of days without sign: 1 den, 2-4 dny, 5+ dní. */
 export function days(n: number): string {
   return plural(Math.abs(n), 'den', 'dny', 'dní');
 }
 
 /** Text for a deadline relative to the reference date. */
 export function daysLeftLabel(value: number | null): string {
-  if (value === null) return '—';
+  if (value === null) return '-';
   if (value < 0) return `${days(value)} po termínu`;
   if (value === 0) return 'dnes';
   return `za ${days(value)}`;

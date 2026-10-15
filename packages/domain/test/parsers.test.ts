@@ -18,7 +18,7 @@ describe('parseDate', () => {
     ['06.01.2019', '2019-01-06', 'cz'],
     ['43552', '2019-03-28', 'excel'],
     ['  2026-10-01 ', '2026-10-01', 'iso'],
-  ])('%s → %s (%s)', (raw, date, format) => {
+  ])('%s -> %s (%s)', (raw, date, format) => {
     expect(parseDate(raw)).toEqual({ ok: true, date, format });
   });
 
@@ -59,7 +59,7 @@ describe('parseCzk', () => {
     [`2${String.fromCharCode(0xa0)}100 Kč`, 2100], // no-break space as thousands separator
     ['zdarma', 0],
     ['800', 800],
-  ])('%s → %d', (raw, value) => {
+  ])('%s -> %d', (raw, value) => {
     expect(parseCzk(raw)).toEqual({ ok: true, value, negative: false });
   });
 

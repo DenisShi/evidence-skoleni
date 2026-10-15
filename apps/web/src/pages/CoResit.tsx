@@ -18,7 +18,7 @@ export function CoResit() {
     <>
       <Typography.Title level={3}>Co řešit</Typography.Title>
       <Typography.Paragraph type="secondary">
-        Povinná školení, která chybí, prošla nebo brzy vyprší – od nejnaléhavějšího. U každého je
+        Povinná školení, která chybí, prošla nebo brzy vyprší - od nejnaléhavějšího. U každého je
         termín, na který je doporučeno člověka přihlásit (viz Plán přihlášek).
       </Typography.Paragraph>
       <Filters values={filter} onChange={setFilter} show={FILTERS} />
@@ -45,7 +45,7 @@ export function CoResit() {
                   </>
                 ),
               },
-              { title: 'Útvar', key: 'unit', render: (_, a) => a.employee.unit ?? '—' },
+              { title: 'Útvar', key: 'unit', render: (_, a) => a.employee.unit ?? '-' },
               {
                 title: 'Školení',
                 dataIndex: 'code',
@@ -81,13 +81,13 @@ export function CoResit() {
                 render: (_, a) =>
                   a.planned ? (
                     <>
-                      {a.planned.sessionId} · {formatDate(a.planned.date)}{' '}
+                      {a.planned.sessionId}, {formatDate(a.planned.date)}{' '}
                       <TimingTag timing={a.planned.timing} />
                     </>
                   ) : a.unplannedReason ? (
                     <Tag>{UNASSIGNED_REASON[a.unplannedReason]}</Tag>
                   ) : (
-                    '—'
+                    '-'
                   ),
               },
             ]}

@@ -3,12 +3,12 @@ import { addDays } from './dates.ts';
 import type { Dataset, Employee, IsoDate, Session } from './types.ts';
 
 /**
- * - `overdue`: already expired/missing at the reference date – any session is as soon as possible.
+ * - `overdue`: already expired/missing at the reference date - any session is as soon as possible.
  * - `on-time`: the session is on or before the deadline.
  * - `late`: the deadline is still ahead, but no seat was available before it.
  * - `after-start`: a newcomer can attend only from the first day, so a session on the start date
  *   is the best possible; anything later means the induction has to be covered otherwise (e.g. by
- *   the manager on day one). Not counted as a shortage – an extra session would not help.
+ *   the manager on day one). Not counted as a shortage - an extra session would not help.
  */
 export type Timing = 'overdue' | 'on-time' | 'late' | 'after-start';
 
@@ -40,7 +40,7 @@ export interface UnassignedNeed {
 
 export interface SessionPlan {
   session: Session;
-  /** Free seats according to the export (capacity − booked, never negative). */
+  /** Free seats according to the export (capacity - booked, never negative). */
   freeSeats: number;
   assignedEmployeeIds: string[];
 }
@@ -51,7 +51,7 @@ export interface Shortage {
   withoutSeat: number;
   /** People who got a seat only after their deadline. */
   late: number;
-  /** Earliest deadline among them – an extra session should take place before it. */
+  /** Earliest deadline among them - an extra session should take place before it. */
   earliestDeadline: IsoDate;
 }
 

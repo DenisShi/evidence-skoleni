@@ -48,7 +48,7 @@ export function AppLayout() {
             value={asOf ? dayjs(asOf) : null}
             onChange={(value) => set({ asOf: value ? value.format('YYYY-MM-DD') : null })}
           />
-          <Tooltip title="Školení, která vyprší v tomto počtu dní, se hlásí jako „brzy vyprší“.">
+          <Tooltip title='Školení, která vyprší v tomto počtu dní, se hlásí jako "brzy vyprší".'>
             <Typography.Text strong>Upozornit dní předem</Typography.Text>
           </Tooltip>
           <InputNumber

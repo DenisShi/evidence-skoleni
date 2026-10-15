@@ -22,7 +22,7 @@ export interface Overview {
   totals: StatusCounts;
   byTraining: (StatusCounts & { code: string })[];
   byUnit: (StatusCounts & { unit: string })[];
-  /** Unit × training cells; only combinations where the training is mandatory. */
+  /** Unit/training cells; only combinations where the training is mandatory. */
   matrix: (StatusCounts & { unit: string; code: string })[];
 }
 

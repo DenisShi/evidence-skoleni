@@ -84,8 +84,8 @@ describe('Co řešit', () => {
     expect(await screen.findByText('Novák Karel')).toBeInTheDocument();
     expect(screen.getByText('Prošlé')).toBeInTheDocument();
     expect(screen.getByText('162 dní po termínu')).toBeInTheDocument();
-    expect(screen.getByText(/T001 · 11\. 11\. 2026/)).toBeInTheDocument();
-    expect(screen.getByText('Na rodičovské – naplánovat po návratu')).toBeInTheDocument();
+    expect(screen.getByText(/T001, 11\. 11\. 2026/)).toBeInTheDocument();
+    expect(screen.getByText('Na rodičovské - naplánovat po návratu')).toBeInTheDocument();
   });
 
   it('passes the reference date and filters from the URL to the API', async () => {

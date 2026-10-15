@@ -63,7 +63,7 @@ export function Filters({ values, onChange, show }: Props) {
       {select(
         'code',
         'Školení',
-        (meta?.trainingTypes ?? []).map((t) => ({ value: t.code, label: `${t.code} – ${t.name}` })),
+        (meta?.trainingTypes ?? []).map((t) => ({ value: t.code, label: `${t.code} - ${t.name}` })),
         260
       )}
       {select(

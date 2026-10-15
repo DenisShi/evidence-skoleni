@@ -19,7 +19,7 @@ export function ZamestnanecDetail() {
     <QueryState query={employee}>
       {(e) => (
         <>
-          <Link to={link('/zamestnanci')}>← Zaměstnanci</Link>
+          <Link to={link('/zamestnanci')}>Zpět na zaměstnance</Link>
           <Typography.Title level={3}>
             {e.lastName} {e.firstName} <StateTag state={e.state} />
           </Typography.Title>
@@ -35,13 +35,13 @@ export function ZamestnanecDetail() {
             </Descriptions.Item>
             <Descriptions.Item label="Stav">{EMPLOYEE_STATE[e.state].label}</Descriptions.Item>
             <Descriptions.Item label="Útvar">
-              {e.unit ?? '—'} {e.unitInferred && <Tag>odvozeno</Tag>}
+              {e.unit ?? '-'} {e.unitInferred && <Tag>odvozeno</Tag>}
             </Descriptions.Item>
             <Descriptions.Item label="Pozice">{e.position}</Descriptions.Item>
             <Descriptions.Item label="Vedoucí">
-              {e.manager ? <EmployeeLink id={e.manager.id} name={e.manager.name} /> : '—'}
+              {e.manager ? <EmployeeLink id={e.manager.id} name={e.manager.name} /> : '-'}
             </Descriptions.Item>
-            <Descriptions.Item label="E-mail">{e.email ?? '—'}</Descriptions.Item>
+            <Descriptions.Item label="E-mail">{e.email ?? '-'}</Descriptions.Item>
             <Descriptions.Item label="Nástup">{formatDate(e.startDate)}</Descriptions.Item>
             <Descriptions.Item label="Ukončení">{formatDate(e.endDate)}</Descriptions.Item>
           </Descriptions>
@@ -52,7 +52,7 @@ export function ZamestnanecDetail() {
           {e.state === 'terminated' ? (
             <Alert
               type="info"
-              title="Ukončený pracovní poměr – povinná školení se nevyhodnocují."
+              title="Ukončený pracovní poměr - povinná školení se nevyhodnocují."
             />
           ) : (
             <Table<Requirement>
@@ -61,7 +61,7 @@ export function ZamestnanecDetail() {
               pagination={false}
               dataSource={e.requirements}
               columns={[
-                { title: 'Školení', key: 'name', render: (_, r) => `${r.code} – ${r.name}` },
+                { title: 'Školení', key: 'name', render: (_, r) => `${r.code} - ${r.name}` },
                 {
                   title: 'Stav',
                   dataIndex: 'status',
@@ -79,10 +79,10 @@ export function ZamestnanecDetail() {
                   key: 'deadline',
                   render: (_, r) =>
                     r.waivedReason
-                      ? 'neřeší se – odchází dřív'
+                      ? 'neřeší se - odchází dřív'
                       : r.deadline
                         ? `${formatDate(r.deadline)} (${daysLeftLabel(r.daysLeft)})`
-                        : '—',
+                        : '-',
                 },
                 {
                   title: 'Doporučený termín',
@@ -90,11 +90,11 @@ export function ZamestnanecDetail() {
                   render: (_, r) =>
                     r.planned ? (
                       <>
-                        {r.planned.sessionId} · {formatDate(r.planned.date)}{' '}
+                        {r.planned.sessionId}, {formatDate(r.planned.date)}{' '}
                         <TimingTag timing={r.planned.timing} />
                       </>
                     ) : (
-                      '—'
+                      '-'
                     ),
                 },
               ]}

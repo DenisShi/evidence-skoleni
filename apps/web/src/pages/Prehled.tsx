@@ -93,7 +93,7 @@ export function Prehled() {
               </Row>
 
               <Typography.Title level={4} style={{ marginTop: 24 }}>
-                Útvary × školení
+                Útvary a školení
               </Typography.Title>
               <Typography.Paragraph type="secondary">
                 Platná / povinná. Prázdná buňka = školení pro útvar není povinné. Klik otevře seznam
@@ -149,7 +149,7 @@ export function Prehled() {
                   {
                     title: 'Školení',
                     dataIndex: 'code',
-                    render: (code: string) => `${code} – ${trainingName.get(code) ?? ''}`,
+                    render: (code: string) => `${code} - ${trainingName.get(code) ?? ''}`,
                   },
                   { title: 'Povinných', dataIndex: 'total', align: 'right' },
                   { title: 'Platné', dataIndex: 'ok', align: 'right' },

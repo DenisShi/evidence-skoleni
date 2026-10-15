@@ -41,12 +41,12 @@ export function Zamestnanci() {
                 ),
               },
               { title: 'ID', dataIndex: 'id' },
-              { title: 'Útvar', dataIndex: 'unit', render: (unit: string | null) => unit ?? '—' },
+              { title: 'Útvar', dataIndex: 'unit', render: (unit: string | null) => unit ?? '-' },
               { title: 'Pozice', dataIndex: 'position' },
               {
                 title: 'Vedoucí',
                 dataIndex: 'managerName',
-                render: (name: string | null) => name ?? '—',
+                render: (name: string | null) => name ?? '-',
               },
               {
                 title: (

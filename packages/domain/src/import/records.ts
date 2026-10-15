@@ -38,7 +38,7 @@ export function importRecords(
 
     // Non-data rows that ended up in the export.
     if (id.startsWith('#')) {
-      addIssue(ref, 'komentar', 'info', `Komentářový řádek „${id.slice(0, 60)}…“ přeskočen.`);
+      addIssue(ref, 'komentar', 'info', `Komentářový řádek "${id.slice(0, 60)}..." přeskočen.`);
       continue;
     }
     if (id === 'id_zaznamu') {
@@ -67,7 +67,7 @@ export function importRecords(
     if (!employee) {
       exclude(
         'neznamy-zamestnanec',
-        `Zaměstnanec ${exportedId} („${(row.zamestnanec ?? '').trim()}“) není v seznamu zaměstnanců.`
+        `Zaměstnanec ${exportedId} ("${(row.zamestnanec ?? '').trim()}") není v seznamu zaměstnanců.`
       );
       continue;
     }
@@ -75,7 +75,7 @@ export function importRecords(
     if (!sameName(row.zamestnanec ?? '', exportedName)) {
       exclude(
         'nesouhlasi-jmeno',
-        `ID ${exportedId} patří osobě „${exportedName.trim()}“, ale záznam je na jméno „${(row.zamestnanec ?? '').trim()}“ – nelze určit, komu školení patří.`
+        `ID ${exportedId} patří osobě "${exportedName.trim()}", ale záznam je na jméno "${(row.zamestnanec ?? '').trim()}" - nelze určit, komu školení patří.`
       );
       continue;
     }
@@ -86,7 +86,7 @@ export function importRecords(
     if (!type) {
       exclude(
         'neznamy-kod',
-        code ? `Neznámý kód školení „${rawCode.trim()}“.` : 'Chybí kód školení.'
+        code ? `Neznámý kód školení "${rawCode.trim()}".` : 'Chybí kód školení.'
       );
       continue;
     }
@@ -95,17 +95,17 @@ export function importRecords(
         ref,
         'preklep-v-kodu',
         'warning',
-        `Kód „${rawCode.trim()}“ opraven na „${code}“ (překlep).`
+        `Kód "${rawCode.trim()}" opraven na "${code}" (překlep).`
       );
     } else if (code !== rawCode) {
-      addIssue(ref, 'format-kodu', 'info', `Kód „${rawCode}“ sjednocen na „${code}“.`);
+      addIssue(ref, 'format-kodu', 'info', `Kód "${rawCode}" sjednocen na "${code}".`);
     }
 
     const completed = parseDate(row.datum_absolvovani ?? '');
     if (!completed.ok) {
       exclude(
         'neplatne-datum',
-        `Nečitelné datum absolvování „${(row.datum_absolvovani ?? '').trim()}“.`
+        `Nečitelné datum absolvování "${(row.datum_absolvovani ?? '').trim()}".`
       );
       continue;
     }
@@ -125,7 +125,7 @@ export function importRecords(
     if (completedOn > exportDate) {
       exclude(
         'datum-v-budoucnu',
-        `Datum absolvování ${formatCz(completedOn)} je po datu exportu (${formatCz(exportDate)}) – jde nejspíš o předem zadaný plán, ne o absolvované školení.`
+        `Datum absolvování ${formatCz(completedOn)} je po datu exportu (${formatCz(exportDate)}) - jde nejspíš o předem zadaný plán, ne o absolvované školení.`
       );
       continue;
     }
@@ -138,7 +138,7 @@ export function importRecords(
         ref,
         'duplicitni-zaznam',
         'warning',
-        `Duplicita záznamu ${firstId} (stejná osoba, školení a datum) – vynechán.`
+        `Duplicita záznamu ${firstId} (stejná osoba, školení a datum) - vynechán.`
       );
       continue;
     }
@@ -152,14 +152,14 @@ export function importRecords(
         ref,
         'neplatna-cena',
         'warning',
-        `Nečitelná cena „${(row.cena_kc ?? '').trim()}“ – vedeno bez ceny.`
+        `Nečitelná cena "${(row.cena_kc ?? '').trim()}" - vedeno bez ceny.`
       );
     } else if (cost.negative) {
       addIssue(
         ref,
         'zaporna-cena',
         'warning',
-        `Záporná cena ${cost.value} Kč (dobropis?) – ponecháno beze změny.`
+        `Záporná cena ${cost.value} Kč (dobropis?) - ponecháno beze změny.`
       );
     }
 
@@ -169,7 +169,7 @@ export function importRecords(
         ref,
         'vzorec-v-poznamce',
         'warning',
-        'Poznámka vypadá jako vzorec tabulkového procesoru – zobrazována jen jako text.'
+        'Poznámka vypadá jako vzorec tabulkového procesoru - zobrazována jen jako text.'
       );
     }
 
@@ -198,7 +198,7 @@ export function importRecords(
         'Celkem',
         'kontrolni-soucet',
         'error',
-        `Soubor deklaruje ${declaredTotal} záznamů, načteno ${dataRows} – export může být neúplný.`
+        `Soubor deklaruje ${declaredTotal} záznamů, načteno ${dataRows} - export může být neúplný.`
       );
     }
   }
@@ -227,14 +227,14 @@ function effectiveExpiry(
         ref,
         'neplatna-platnost',
         'warning',
-        `Nečitelné datum platnosti „${rawValidUntil.trim()}“ – dopočteno z katalogu.`
+        `Nečitelné datum platnosti "${rawValidUntil.trim()}" - dopočteno z katalogu.`
       );
     } else {
       addIssue(
         ref,
         'chybi-platnost',
         'info',
-        `Chybí datum platnosti – dopočteno z katalogu (${formatCz(fromCatalog)}).`
+        `Chybí datum platnosti - dopočteno z katalogu (${formatCz(fromCatalog)}).`
       );
     }
     return fromCatalog;
@@ -244,7 +244,7 @@ function effectiveExpiry(
       ref,
       'platnost-pred-absolvovanim',
       'warning',
-      `Platnost do ${formatCz(exported.date)} je dřív než absolvování – použita platnost z katalogu (${formatCz(fromCatalog)}).`
+      `Platnost do ${formatCz(exported.date)} je dřív než absolvování - použita platnost z katalogu (${formatCz(fromCatalog)}).`
     );
     return fromCatalog;
   }
@@ -254,7 +254,7 @@ function effectiveExpiry(
       ref,
       'platnost-rozpor',
       'warning',
-      `Platnost v exportu (${formatCz(exported.date)}) nesouhlasí s katalogem (${type.validityMonths} měs. → ${formatCz(fromCatalog)}); použito dřívější ${formatCz(used)}.`
+      `Platnost v exportu (${formatCz(exported.date)}) nesouhlasí s katalogem (${type.validityMonths} měs. -> ${formatCz(fromCatalog)}); použito dřívější ${formatCz(used)}.`
     );
     return used;
   }

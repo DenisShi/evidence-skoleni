@@ -7,7 +7,7 @@ import type { AddIssue } from './issues.ts';
 
 export interface EmployeesImport {
   employees: Employee[];
-  /** Duplicate employee ID → ID of the employee it was merged into. */
+  /** Duplicate employee ID -> ID of the employee it was merged into. */
   mergedInto: Map<string, string>;
   /** Name exactly as exported for every ID (incl. merged duplicates), used to verify training records. */
   exportedNames: Map<string, string>;
@@ -49,7 +49,7 @@ export function importEmployees(
         `řádek ${line}`,
         'neplatne-id',
         'error',
-        `Neplatné ID zaměstnance „${id}“ – řádek vynechán.`
+        `Neplatné ID zaměstnance "${id}" - řádek vynechán.`
       );
       continue;
     }
@@ -82,14 +82,14 @@ export function importEmployees(
         id,
         'neplatny-email',
         'warning',
-        `Neplatný e-mail „${(row.email ?? '').trim()}“ – vedeno bez e-mailu.`
+        `Neplatný e-mail "${(row.email ?? '').trim()}" - vedeno bez e-mailu.`
       );
     } else if (email.repaired) {
       addIssue(
         id,
         'oprava-emailu',
         'warning',
-        `E-mail „${(row.email ?? '').trim()}“ opraven na „${email.email}“.`
+        `E-mail "${(row.email ?? '').trim()}" opraven na "${email.email}".`
       );
     }
     const managerEmail = normalizeEmail(row.vedouci_email ?? '');
@@ -101,7 +101,7 @@ export function importEmployees(
         id,
         'nazev-utvaru',
         'info',
-        `Útvar „${(row.utvar ?? '').trim()}“ sjednocen na „${unit}“.`
+        `Útvar "${(row.utvar ?? '').trim()}" sjednocen na "${unit}".`
       );
     }
 
@@ -112,7 +112,7 @@ export function importEmployees(
         id,
         'nastup-v-budoucnu',
         'info',
-        `Nástup až ${formatCz(startDate)} – zatím bez školení, potřebuje vstupní školení.`
+        `Nástup až ${formatCz(startDate)} - zatím bez školení, potřebuje vstupní školení.`
       );
     }
 
@@ -124,11 +124,11 @@ export function importEmployees(
         id,
         'neznamy-stav',
         'warning',
-        `Neznámý stav „${rawStatus}“ – zaměstnanec veden jako aktivní.`
+        `Neznámý stav "${rawStatus}" - zaměstnanec veden jako aktivní.`
       );
     }
     if (status === 'terminated' && !endDate) {
-      addIssue(id, 'ukonceni-bez-data', 'warning', 'Stav „ukončen“ bez data ukončení.');
+      addIssue(id, 'ukonceni-bez-data', 'warning', 'Stav "ukončen" bez data ukončení.');
     }
 
     if (looksLikeFormula(row.poznamka ?? '')) {
@@ -172,7 +172,7 @@ function readDate(id: string, column: string, raw: string, addIssue: AddIssue): 
       id,
       'neplatne-datum',
       'error',
-      `Nečitelné datum ve sloupci ${column}: „${raw.trim()}“ – ignorováno.`
+      `Nečitelné datum ve sloupci ${column}: "${raw.trim()}" - ignorováno.`
     );
   }
   return null;
@@ -195,7 +195,7 @@ function resolveManagers(
         employee.id,
         'neznamy-vedouci',
         'warning',
-        `Vedoucí „${managerEmail}“ není mezi zaměstnanci – vedeno bez vedoucího.`
+        `Vedoucí "${managerEmail}" není mezi zaměstnanci - vedeno bez vedoucího.`
       );
     }
   }
@@ -233,7 +233,7 @@ function inferMissingUnits(employees: Employee[], addIssue: AddIssue): void {
       employee.id,
       'chybi-utvar',
       'error',
-      'Chybí útvar a nelze ho odvodit – útvarová školení nelze vyhodnotit.'
+      'Chybí útvar a nelze ho odvodit - útvarová školení nelze vyhodnotit.'
     );
   }
 }
@@ -245,7 +245,7 @@ function setInferred(employee: Employee, unit: string, how: string, addIssue: Ad
     employee.id,
     'odvozeny-utvar',
     'warning',
-    `Chybějící útvar doplněn na „${unit}“ (${how}).`
+    `Chybějící útvar doplněn na "${unit}" (${how}).`
   );
 }
 

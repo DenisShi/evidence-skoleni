@@ -73,7 +73,7 @@ const detail: EmployeeDetail = {
       ref: 'E1000',
       type: 'duplicitni-zamestnanec',
       severity: 'warning',
-      message: 'Stejná osoba jako E0003 – záznam sloučen.',
+      message: 'Stejná osoba jako E0003 - záznam sloučen.',
     },
   ],
 };
@@ -114,7 +114,7 @@ const plan: PlanResponse = {
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('Zaměstnanec – detail', () => {
+describe('Zaměstnanec - detail', () => {
   const renderDetail = (url: string) =>
     renderPage('/zamestnanci/:id', <ZamestnanecDetail />, url, {
       '/api/employees/E0003': detail,
@@ -125,8 +125,8 @@ describe('Zaměstnanec – detail', () => {
     expect(await screen.findByText(/Novák Karel/)).toBeInTheDocument();
     expect(screen.getByText(/sloučeno s E1000/)).toBeInTheDocument();
     expect(screen.getByText('odvozeno')).toBeInTheDocument();
-    expect(screen.getByText(/T001 · 11\. 11\. 2026/)).toBeInTheDocument();
-    expect(screen.getByText('Stejná osoba jako E0003 – záznam sloučen.')).toBeInTheDocument();
+    expect(screen.getByText(/T001, 11\. 11\. 2026/)).toBeInTheDocument();
+    expect(screen.getByText('Stejná osoba jako E0003 - záznam sloučen.')).toBeInTheDocument();
   });
 
   it('renders notes from the export as plain text, not as HTML', async () => {

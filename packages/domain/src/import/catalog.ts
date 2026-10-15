@@ -9,11 +9,11 @@ export function importCatalog(table: CsvTable, addIssue: AddIssue): TrainingType
   for (const row of table.rows) {
     const code = normalizeCode(row.kod ?? '');
     if (code === '') {
-      addIssue('řádek bez kódu', 'chybi-kod', 'error', 'Druh školení bez kódu – vynechán.');
+      addIssue('řádek bez kódu', 'chybi-kod', 'error', 'Druh školení bez kódu - vynechán.');
       continue;
     }
     if (types.some((t) => t.code === code)) {
-      addIssue(code, 'duplicitni-kod', 'error', 'Kód je v katalogu dvakrát – použit první výskyt.');
+      addIssue(code, 'duplicitni-kod', 'error', 'Kód je v katalogu dvakrát - použit první výskyt.');
       continue;
     }
     types.push({
@@ -49,7 +49,7 @@ function parseValidity(code: string, raw: string, addIssue: AddIssue): number | 
       code,
       'platnost-v-letech',
       'warning',
-      `Platnost „${value}“ převedena na ${months} měsíců.`
+      `Platnost "${value}" převedena na ${months} měsíců.`
     );
     return months;
   }
@@ -57,7 +57,7 @@ function parseValidity(code: string, raw: string, addIssue: AddIssue): number | 
     code,
     'neplatna-platnost',
     'error',
-    `Nesrozumitelná platnost „${value}“ – školení vedeno bez expirace.`
+    `Nesrozumitelná platnost "${value}" - školení vedeno bez expirace.`
   );
   return null;
 }
@@ -83,7 +83,7 @@ function parseRequirement(code: string, raw: string, addIssue: AddIssue): Requir
         code,
         'nezname-pravidlo',
         'error',
-        `Neznámé pravidlo povinnosti „${value}“ – školení vedeno jako nepovinné.`
+        `Neznámé pravidlo povinnosti "${value}" - školení vedeno jako nepovinné.`
       );
       return { kind: 'optional' };
   }
