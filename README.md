@@ -51,8 +51,9 @@ docker build -t evidence-skoleni .
 docker run --rm -p 3000:3000 -v "$PWD/data:/etc/secrets:ro" -e BASIC_AUTH_USER=hr -e BASIC_AUTH_PASSWORD=dlouhe-heslo-12+ evidence-skoleni
 ```
 
-Kontejner bez dat nebo bez přihlašovacích údajů nenastartuje (chyba konfigurace má být vidět hned,
-ne až při prvním požadavku).
+Kontejner bez dat (chybějící soubor nebo soubor bez jediného použitelného záznamu, např. prázdný
+Secret File) nebo bez přihlašovacích údajů nenastartuje (chyba konfigurace má být vidět hned, ne až
+při prvním požadavku).
 
 ### Konfigurace (proměnné prostředí API)
 

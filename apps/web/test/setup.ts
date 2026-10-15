@@ -1,4 +1,9 @@
 import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/react';
+import { afterEach } from 'vitest';
+
+// Without vitest globals, Testing Library does not unmount rendered pages after each test itself.
+afterEach(cleanup);
 
 // jsdom lacks matchMedia, which antd's responsive components call.
 window.matchMedia ??= (query: string) =>

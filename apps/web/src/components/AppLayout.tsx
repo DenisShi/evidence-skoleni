@@ -19,7 +19,10 @@ export function AppLayout() {
   const link = useLinkWithSnapshot();
   const meta = useMeta();
   const [{ asOf, warningDays }, set] = useUrlState(SNAPSHOT_KEYS);
-  const selected = PAGES.find((p) => p.path !== '/' && pathname.startsWith(p.path))?.path ?? '/';
+  // An unknown path (the not-found page) highlights no item.
+  const selected = PAGES.find((p) =>
+    p.path === '/' ? pathname === '/' : pathname === p.path || pathname.startsWith(`${p.path}/`)
+  )?.path;
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -30,7 +33,7 @@ export function AppLayout() {
         <Menu
           theme="dark"
           mode="horizontal"
-          selectedKeys={[selected]}
+          selectedKeys={selected ? [selected] : []}
           items={PAGES.map((p) => ({ key: p.path, label: p.label }))}
           onClick={({ key }) => navigate(link(key))}
           style={{ flex: 1, minWidth: 0 }}

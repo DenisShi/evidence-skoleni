@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
@@ -6,7 +6,14 @@ import { todayInPrague } from '../src/app.ts';
 import { loadConfig } from '../src/config.ts';
 import { escapeCell, toCsv } from '../src/csv-export.ts';
 import { loadData } from '../src/load-data.ts';
-import { testApp } from './helpers.ts';
+import { FIXTURES, testApp } from './helpers.ts';
+
+const FIXTURE_FILES = [
+  'zamestnanci.csv',
+  'absolvovana_skoleni.csv',
+  'katalog_skoleni.csv',
+  'terminy_skoleni.csv',
+];
 
 const credentials = { user: 'hr', password: 'correct-horse-battery' };
 const basic = (user: string, password: string) =>
@@ -179,6 +186,23 @@ describe('data loading', () => {
       );
     } finally {
       rmSync(empty, { recursive: true, force: true });
+    }
+  });
+
+  it('refuses files without usable records, e.g. an empty secret file', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'evidence-data-'));
+    try {
+      for (const file of FIXTURE_FILES) copyFileSync(join(FIXTURES, file), join(dir, file));
+      // Header only, as when the content got lost on upload.
+      writeFileSync(join(dir, 'terminy_skoleni.csv'), 'id_terminu;kod_skoleni;datum\r\n');
+      expect(() => loadData(dir, '2026-10-01')).toThrow(/no usable records: terminy_skoleni\.csv$/);
+      // Without employees no record can be matched either, so both are named.
+      writeFileSync(join(dir, 'zamestnanci.csv'), '');
+      expect(() => loadData(dir, '2026-10-01')).toThrow(
+        /no usable records: zamestnanci\.csv, absolvovana_skoleni\.csv, terminy_skoleni\.csv$/
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
   });
 });

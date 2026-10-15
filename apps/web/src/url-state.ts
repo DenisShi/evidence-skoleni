@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSearchParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 
 /**
  * All view state (reference date, warning window, filters) lives in the URL, so a view can be
@@ -56,4 +56,32 @@ export function useLinkWithSnapshot() {
     },
     [searchParams]
   );
+}
+
+/** Router state of a link to a detail page: the list it was opened from, with its filters. */
+export interface FromState {
+  from?: string;
+}
+
+/**
+ * Target of a "back" link on a detail page: the list it was opened from with its search and
+ * filters, or `fallback` when opened directly. The reference date and warning window are taken
+ * from the current URL, as they may have been changed on the detail page.
+ */
+export function useBackLink(fallback: string) {
+  const link = useLinkWithSnapshot();
+  const [searchParams] = useSearchParams();
+  const from = (useLocation().state as FromState | null)?.from;
+  // Only paths within the app; the router state is not trusted input.
+  if (!from?.startsWith('/') || from.startsWith('//'))
+    return { to: link(fallback), returns: false };
+  const [path = '/', query = ''] = from.split('?');
+  const next = new URLSearchParams(query);
+  for (const key of SNAPSHOT_KEYS) {
+    const value = searchParams.get(key);
+    if (value) next.set(key, value);
+    else next.delete(key);
+  }
+  const search = next.toString();
+  return { to: search ? `${path}?${search}` : path, returns: true };
 }

@@ -99,7 +99,7 @@ function IssuesTable({
             })),
             onFilter: (value, i) => i.file === value,
           },
-          { title: 'Řádek', dataIndex: 'ref' },
+          { title: 'Záznam', dataIndex: 'ref' },
           {
             title: 'Závažnost',
             dataIndex: 'severity',

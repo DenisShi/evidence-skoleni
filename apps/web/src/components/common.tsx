@@ -2,10 +2,10 @@ import type { EmployeeState, RequirementState, Timing } from '@evidence/domain';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Alert, Flex, Spin, Tag, Tooltip } from 'antd';
 import { type ReactNode, useDeferredValue } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { ApiError } from '../api/client.ts';
 import { EMPLOYEE_STATE, STATUS, TIMING } from '../labels.ts';
-import { useLinkWithSnapshot } from '../url-state.ts';
+import { type FromState, useLinkWithSnapshot } from '../url-state.ts';
 
 /**
  * Spinner centred in the area it fills. The short delay keeps it from flashing when the content is
@@ -66,7 +66,14 @@ export function TimingTag({ timing }: { timing: Timing }) {
   );
 }
 
+/** Link to an employee's detail; remembers the current page so "back" returns to it as it was. */
 export function EmployeeLink({ id, name }: { id: string; name: string }) {
   const link = useLinkWithSnapshot();
-  return <Link to={link(`/zamestnanci/${id}`)}>{name}</Link>;
+  const { pathname, search } = useLocation();
+  const state: FromState = { from: pathname + search };
+  return (
+    <Link to={link(`/zamestnanci/${id}`)} state={state}>
+      {name}
+    </Link>
+  );
 }

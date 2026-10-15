@@ -10,6 +10,8 @@ import { useLinkWithSnapshot, useSnapshotParams, useUrlState } from '../url-stat
 type UnitRow = StatusCounts & { unit: string };
 
 const valid = (c: StatusCounts) => c.ok + c.expiring;
+/** Not ok, yet nothing to do: the employee leaves before the deadline. */
+const waived = (c: StatusCounts) => c.expiring + c.expired + c.missing - c.needsAction;
 
 /** Cell colour by share of valid trainings: the matrix is meant to be scanned, not read. */
 function cellColor(c: StatusCounts): string {
@@ -64,7 +66,10 @@ export function Prehled() {
                     </Link>
                     <Typography.Text type="secondary">
                       {plural(data.totals.expired, 'prošlé', 'prošlá', 'prošlých')},{' '}
-                      {plural(data.totals.missing, 'chybějící', 'chybějící', 'chybějících')}
+                      {plural(data.totals.missing, 'chybějící', 'chybějící', 'chybějících')},{' '}
+                      {data.totals.expiring} brzy vyprší
+                      {waived(data.totals) > 0 &&
+                        `; z toho ${waived(data.totals)} neřešit (odchod před termínem)`}
                     </Typography.Text>
                   </Card>
                 </Col>

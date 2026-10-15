@@ -1,14 +1,17 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
-import { createMemoryRouter, RouterProvider } from 'react-router';
+import { createMemoryRouter, type InitialEntry, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 
 /** API responses by path prefix; a missing entry answers 404 like the real API. */
 export type MockApi = Record<string, unknown>;
 
-/** Renders one page at `url` with `fetch` answered from `api`; returns the fetch mock. */
-export function renderPage(path: string, element: ReactElement, url: string, api: MockApi) {
+/**
+ * Renders one page at `url` (a string, or a location with router state) with `fetch` answered
+ * from `api`; returns the fetch mock.
+ */
+export function renderPage(path: string, element: ReactElement, url: InitialEntry, api: MockApi) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const requested = String(input).split('?')[0]!;
     const match = Object.keys(api)
