@@ -1,11 +1,23 @@
 import type { EmployeeState, RequirementState, Timing } from '@evidence/domain';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { Alert, Spin, Tag, Tooltip } from 'antd';
-import type { ReactNode } from 'react';
+import { Alert, Flex, Spin, Tag, Tooltip } from 'antd';
+import { type ReactNode, useDeferredValue } from 'react';
 import { Link } from 'react-router';
 import { ApiError } from '../api/client.ts';
 import { EMPLOYEE_STATE, STATUS, TIMING } from '../labels.ts';
 import { useLinkWithSnapshot } from '../url-state.ts';
+
+/**
+ * Spinner centred in the area it fills. The short delay keeps it from flashing when the content is
+ * ready almost at once.
+ */
+export function Loading({ minHeight = '50vh' }: { minHeight?: string }) {
+  return (
+    <Flex justify="center" align="center" style={{ minHeight }}>
+      <Spin size="large" delay={200} />
+    </Flex>
+  );
+}
 
 /** Loading and error handling in one place, so pages only render data. */
 export function QueryState<T>({
@@ -15,6 +27,10 @@ export function QueryState<T>({
   query: UseQueryResult<T>;
   children: (data: T) => ReactNode;
 }) {
+  // Rendering a page of table rows takes a while. Deferring it lets a navigation show the new tab
+  // and page at once, with the data rendered right after in the background instead of holding the
+  // old page until everything is ready. `null` = not rendered yet on the first mount.
+  const data = useDeferredValue<T | undefined | null>(query.data, null);
   if (query.isError) {
     const notFound = query.error instanceof ApiError && query.error.status === 404;
     return notFound ? (
@@ -28,8 +44,8 @@ export function QueryState<T>({
       />
     );
   }
-  if (query.data === undefined) return <Spin style={{ display: 'block', margin: 48 }} />;
-  return <>{children(query.data)}</>;
+  if (data == null) return <Loading />;
+  return <>{children(data)}</>;
 }
 
 export function StatusTag({ status }: { status: RequirementState | null }) {

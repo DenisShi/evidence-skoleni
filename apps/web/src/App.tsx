@@ -1,12 +1,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ConfigProvider, Result, Spin } from 'antd';
+import { ConfigProvider, Result } from 'antd';
 import csCZ from 'antd/locale/cs_CZ';
 import dayjs from 'dayjs';
 import 'dayjs/locale/cs';
-import type { ComponentType } from 'react';
+import { type ComponentType, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ApiError } from './api/client.ts';
 import { AppLayout } from './components/AppLayout.tsx';
+import { Loading } from './components/common.tsx';
 
 dayjs.locale('cs');
 
@@ -15,7 +16,7 @@ export const routes = [
     path: '/',
     element: <AppLayout />,
     // Shown while the first page chunk loads.
-    hydrateFallbackElement: <Spin style={{ display: 'block', margin: 48 }} />,
+    hydrateFallbackElement: <Loading minHeight="100vh" />,
     errorElement: (
       <Result status="error" title="Něco se pokazilo" subTitle="Zkuste stránku načíst znovu." />
     ),
@@ -63,7 +64,20 @@ const queryClient = new QueryClient({
 });
 const router = createBrowserRouter(routes);
 
+/**
+ * The page chunks are small, so all of them are fetched once the first page is up: a later switch
+ * to another page then does not wait for its chunk.
+ */
+function preloadPages() {
+  for (const route of routes[0]!.children) void route.lazy?.().catch(() => undefined);
+}
+
 export function App() {
+  useEffect(() => {
+    const timer = setTimeout(preloadPages, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ConfigProvider locale={csCZ}>
       <QueryClientProvider client={queryClient}>
